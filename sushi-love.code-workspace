@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../sushi-api"
+		},
+		{
+			"path": "../sushi-devops"
+		}
+	],
+	"settings": {}
+}
