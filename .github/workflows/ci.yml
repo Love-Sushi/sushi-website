@@ -13,7 +13,7 @@ jobs:
         with: 
           node-version: "12.x"
       - run: yarn install --frozen-lockfile
-      - run: npm run format:check
-      - run: npm test -- --coverage
+      - run: yarn format:check
+      - run: yarn test -- --coverage
         env: 
           CI: true
