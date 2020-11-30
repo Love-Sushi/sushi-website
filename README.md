@@ -1,3 +1,5 @@
+![](https://github.com/Love-Sushi/sushi-website/workflows/CI/badge.svg?branch=develop&event=push)
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
