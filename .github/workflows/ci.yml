@@ -8,6 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+      SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - name: Get yarn cache directory path
@@ -44,14 +47,26 @@ jobs:
           name: build
           path: build
       # - uses: actions/download-artifacts
+      - name: ZIP Assets
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          zip -r build.zip ./build
+          zip -r coverage.zip ./coverage
       - name: Create a Release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Deploy to staging
-        if: github.event_name == 'push'
+      - name: Deploy to Staging
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
         run: npx surge --project ./build --domain energetic-fan.surge.sh
+      - name: Deploy to Production
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        #  add code to deploy docker images
+        run: echo "Deploying to production..."
+      - name: Upload Coverage Reports
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: npx codecov
         env:
-          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
-          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        
