@@ -1,0 +1,22 @@
+on: push
+jobs:
+  testing-action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # - name: Send a Slack message
+      #   uses: ./.github/actions/slack
+      #   with: 
+      #     slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
+      #     message: Hello Slack
+      - uses: ./.github/actions/issue
+        id: issue
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: Title
+          body: Body
+          assignees: |
+            sherifmeimari
+            sherifmemess
+      - run: |
+          echo ${{ steps.issue.outputs.issue }}
