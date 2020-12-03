@@ -57,9 +57,21 @@ jobs:
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_TOKEN }}
+      - name: Send a Release Slack message
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: ./.github/actions/slack
+        with: 
+          slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
+          message: A new Release has been published
       - name: Deploy to Staging
         if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
         run: npx surge --project ./build --domain energetic-fan.surge.sh
+      - name: Send a Staging Slack message
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        uses: ./.github/actions/slack
+        with: 
+          slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
+          message: A new Staging version has been published
       - name: Deploy to Production
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         #  add code to deploy docker images
@@ -71,16 +83,31 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Open issue
         if: failure() && github.event_name == 'pull_request'
-        run: |
-          curl --request POST \
-          --url https://api.github.com/repos/${{ github.repository }}/issues \
-          --header 'authorization: Bearer ${{ secrets.CUSTOM_TOKEN }}' \
-          --header 'content-type: application/json' \
-          --data '{
-            "title": "Automated issue for commit: ${{ github.sha }}",
-            "body": "This issue was automatically created by the GitHub Action workflow **${{ github.workflow }}**. \n\n The commit hash was: _${{ github.sha }}_."
-            }',
-            "assignees": ["${{
-              github.event.pull_request.user.login
-            }}"]
+        # run: |
+        #   curl --request POST \
+        #   --url https://api.github.com/repos/${{ github.repository }}/issues \
+        #   --header 'authorization: Bearer ${{ secrets.CUSTOM_TOKEN }}' \
+        #   --header 'content-type: application/json' \
+        #   --data '{
+        #     "title": "Automated issue for commit: ${{ github.sha }}",
+        #     "body": "This issue was automatically created by the GitHub Action workflow **${{ github.workflow }}**. \n\n The commit hash was: _${{ github.sha }}_."
+        #     }',
+        #     "assignees": ["${{
+        #       github.event.pull_request.user.login
+        #     }}"]
+        uses: ../actions/issue
+        id: issue
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: Test Issue
+          body: Body
+          assignees: |
+            sherifmeimari
+            sherifmemess
+      - name: Send an issue Slack message
+        if: success() && github.event_name == 'pull_request'
+        uses: ./.github/actions/slack
+        with: 
+          slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
+          message: A new issue has been created on Github
         
