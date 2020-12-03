@@ -59,7 +59,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_TOKEN }}
       - name: Send a Release Slack message
         if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: .github/actions/slack
+        uses: ./.github/actions/slack
         with: 
           slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
           message: A new Release has been published
@@ -68,7 +68,7 @@ jobs:
         run: npx surge --project ./build --domain energetic-fan.surge.sh
       - name: Send a Staging Slack message
         if: success() && github.event_name == 'push' && github.ref == 'refs/heads/develop'
-        uses: ./.github/actions/slack
+        uses: ../actions/slack
         with: 
           slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
           message: A new Staging version has been published
@@ -95,8 +95,8 @@ jobs:
         #     "assignees": ["${{
         #       github.event.pull_request.user.login
         #     }}"]
-        uses: .github/actions/issue
-        id: issue 
+        uses: ../actions/issue
+        id: issue
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: Test Issue
@@ -106,7 +106,7 @@ jobs:
             sherifmemess
       - name: Send an issue Slack message
         if: success() && github.event_name == 'pull_request'
-        uses: .github/actions/slack
+        uses: ../actions/slack
         with: 
           slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
           message: A new issue has been created on Github
