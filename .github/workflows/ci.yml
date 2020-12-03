@@ -104,8 +104,8 @@ jobs:
           assignees: |
             sherifmeimari
             sherifmemess
-      - name: Send an issue Slack message 
-        if: github.event_name == 'pull_request'
+      - name: Send an issue Slack message
+        if: success() && github.event_name == 'pull_request'
         uses: ./.github/actions/slack
         with: 
           slack_webhook: ${{ secrets.SLACK_WEBHOOK }}

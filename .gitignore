@@ -10,3 +10,5 @@ yarn-error.log
 
 # Node packages
 node_modules/
+
+.github/actions/slack/vendor/
