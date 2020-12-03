@@ -95,7 +95,7 @@ jobs:
         #     "assignees": ["${{
         #       github.event.pull_request.user.login
         #     }}"]
-        uses: Love-Sushi/sushi-website/.github/actions/issue
+        uses: Love-Sushi/sushi-website/.github/actions/issue@develop
         id: issue
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
